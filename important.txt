@@ -1,0 +1,356 @@
+FACEBOOK APP ID - 1057465191382837
+APP SK - ●●●●●●●●
+
+mailgun pass - 9maAZYc5y9euXT9
+
+
+
+HEROKU POSTGRESS CREDENTIALS
+
+ "dbname=d4j9hvmgoneo31 
+ host=ec2-35-169-184-61.compute-1.amazonaws.com 
+ port=5432 
+ user=oxuwrrxvzbkicr 
+ password=6bd15299603294dd3e88c8db50d5b9a093d28a62f4d8c8657fc320a9e7addda9 
+ sslmode=require"
+Connection URL:
+   postgres://oxuwrrxvzbkicr:6bd15299603294dd3e88c8db50d5b9a093d28a62f4d8c8657fc320a9e7addda9@ec2-35-169-184-61.compute-1.amazonaws.com:5432/d4j9hvmgoneo31
+
+
+
+Twitter api key - O0k6Ek6mXq1YUqM1SLmCE7yoE
+api secret key - DZsuTZK4RLPjCRgYpWKX2ABrPLEBh8Hp3yaXjice02TDa9wBJl
+bearer token - AAAAAAAAAAAAAAAAAAAAAPpvKQEAAAAAqHLsztGVCACmb%2B4gSrhwFVNZZRc%3DH3qcIaosWXzpqwtppgfHU0kVrGzIpuLJCq7YWSqOGWVi3Wv2ls
+
+Laravel Tinker is a shell interface used for parsing interacting with a database
+and is created by Justin Hileman.
+
+Laravel uses socialite for social media authentication, scout for search and nova for building admin panels.
+
+  *****************************
+  Using links 
+  {{route('name')}} is for authentication pages like Login, Sign Up
+  {{url('name')}} is for pages in the url like Home, About
+
+In order to make sure the route file (web) sees or recognizes a controller class,
+it should always be included at the top of the web rout file
+
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\taskController;
+
+   ***********************************
+
+any class that you intend to use on a page, should always be called in.
+
+Also to use the Model class in order to manipulate the database properties,
+the Model file must be brought on the related Controller class file.
+
+use App\Models\Post;
+
+   *************************************
+
+To be able to use to or more tables from a database on a single page, you will
+have to create seperate Models file for each since the Models files are used
+to connect each instance or class to the corresponding database.
+
+then you will have to bring in the same class on the controller file of the 
+page you intend to output them. and since the Model has been brought in the
+controller can now use its tables by creating a variable off it
+
+$categories = category::all();
+
+and then include the variable inside the compact method
+
+return view('pages.post', compact('posts', 'categories'));
+
+Now you can use a Foreach Loop to output its datas.
+            ***
+NOTE - In a case where you have a controller for Model class, you will have
+to also ruote the page in the web file in order to CRUD the database.
+
+meaning, even though the path has been defined with another controller class,
+you still will have to in order to make it work, and never forget to bring in
+your controller class on the routes.web file.
+
+Route::get('/', [reviewController::class, 'index']);
+Route::get('/', [pagesController::class, 'index']);
+     something like this
+
+   ******************************************
+
+To create a new middleware, use the make:middleware Artisan command:
+
+php artisan make:middleware CheckAge
+
+This command will place a new CheckAge class within your app/Http/Middleware directory.
+ In this middleware, we will only allow access to the route if the supplied age is greater than 200.
+  Otherwise, we will redirect the users back to the home URI:
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+
+class CheckAge
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        if ($request->age <= 200) {
+            return redirect('home');
+        }
+
+        return $next($request);
+    }
+}
+
+As you can see, if the given age is less than or equal to 200, the middleware will return an HTTP redirect 
+to the client; otherwise, the request will be passed further into the application. To pass the request deeper
+ into the application (allowing the middleware to "pass"), call the $next callback with the $request.
+
+It's best to envision middleware as a series of "layers" HTTP requests must pass through before they hit
+ your application. Each layer can examine the request and even reject it entirely.
+
+ Global Middleware
+
+If you want a middleware to run during every HTTP request to your application, list the middleware class 
+in the $middleware property of your app/Http/Kernel.php class.
+
+That is after making and defining the function of the middleware in your application.
+
+Assigning Middleware To Routes
+
+If you would like to assign middleware to specific routes, you should first assign the middleware a 
+key in your app/Http/Kernel.php file. By default, the $routeMiddleware property of this class contains 
+entries for the middleware included with Laravel. To add your own, append it to this list and assign it
+ a key of your choosing:
+
+// Within App\Http\Kernel Class...
+
+protected $routeMiddleware = [
+    'auth' => \App\Http\Middleware\Authenticate::class,
+    'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+    'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+    'can' => \Illuminate\Auth\Middleware\Authorize::class,
+    'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+    'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+    'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+    'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+];
+
+Once the middleware has been defined in the HTTP kernel, you may use the middleware method to assign
+ middleware to a route:
+
+Route::get('admin/profile', function () {
+    //
+})->middleware('auth');
+
+You may also assign multiple middleware to the route:
+
+Route::get('/', function () {
+    //
+})->middleware('first', 'second');
+
+When assigning middleware, you may also pass the fully qualified class name:
+
+use App\Http\Middleware\CheckAge;
+
+Route::get('admin/profile', function () {
+    //
+})->middleware(CheckAge::class);
+
+When assigning middleware to a group of routes, you may occasionally need to prevent the middleware from 
+being applied to an individual route within the group. You may accomplish this using the withoutMiddleware
+method:
+
+use App\Http\Middleware\CheckAge;
+
+Route::middleware([CheckAge::class])->group(function () {
+    Route::get('/', function () {
+        //
+    });
+
+    Route::get('admin/profile', function () {
+        //
+    })->withoutMiddleware([CheckAge::class]);
+});
+
+The withoutMiddleware method can only remove route middleware and does not apply to global middleware.
+
+               ***********************
+
+Excluding URIs From CSRF Protection
+
+Sometimes you may wish to exclude a set of URIs from CSRF protection. For example, if you are using Stripe
+ to process payments and are utilizing their webhook system, you will need to exclude your Stripe webhook 
+ handler route from CSRF protection since Stripe will not know what CSRF token to send to your routes.
+
+Typically, you should place these kinds of routes outside of the web middleware group that the 
+RouteServiceProvider applies to all routes in the routes/web.php file. However, you may also exclude 
+the routes by adding their URIs to the $except property of the VerifyCsrfToken middleware:
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+
+class VerifyCsrfToken extends Middleware
+{
+    /**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array
+     */
+    protected $except = [
+        'stripe/*',
+        'http://example.com/foo/bar',
+        'http://example.com/foo/*',
+    ];
+}
+
+     ******************************************
+
+If your application doesn’t need registration, you may disable it by removing the newly created 
+RegisterController and modifying your route declaration: 
+
+Auth::routes(['register' => false]);
+
+      ************************************
+
+      Creating Applications Including Authentication
+
+If you are starting a brand new application and would like to include the authentication scaffolding,
+you may use the --auth directive when creating your application. This command will create a new 
+application with all of the authentication scaffolding compiled and installed:
+
+laravel new blog --auth
+
+   *****************************************************
+
+When a user is successfully authenticated, they will be redirected to the /home URI. 
+You can customize the post-authentication redirect path using the HOME constant defined
+ in your RouteServiceProvider:
+
+public const HOME = '/home';
+
+then go your Homecontroller class fil and also change the file path.
+public function index()
+    {
+        return view('dashboard');
+    }
+
+And also in your web route file 
+Route::get('/dashboard', 'HomeController@index')->name('dashboard');
+
+  *****************************
+
+  Protecting Routes
+
+Route middleware can be used to only allow authenticated users to access a given route. Laravel
+ships with an auth middleware, which is defined at Illuminate\Auth\Middleware\Authenticate. 
+Since this middleware is already registered in your HTTP kernel, all you need to do is attach 
+the middleware to a route definition:
+
+Route::get('profile', function () {
+    // Only authenticated users may enter...
+})->middleware('auth');
+
+If you are using controllers, you may call the middleware method from the controller's constructor
+ instead of attaching it in the route definition directly:
+
+public function __construct()
+{
+    $this->middleware('auth');
+}
+  *************************************
+
+  Specifying A Guard
+
+When attaching the auth middleware to a route, you may also specify which guard should be used to 
+authenticate the user. The guard specified should correspond to one of the keys in the guards array 
+of your auth.php (config/auth.php) configuration file:
+
+public function __construct()
+{
+    $this->middleware('auth:api');
+}
+
+    ******************************************
+
+Password Confirmation
+
+Sometimes, you may wish to require the user to confirm their password before accessing a specific area of your
+ application. For example, you may require this before the user modifies any billing settings within the 
+ application.
+
+To accomplish this, Laravel provides a password.confirm middleware. Attaching the password.confirm middleware
+ to a route will redirect users to a screen where they need to confirm their password before they can continue:
+
+Route::get('/settings/security', function () {
+    // Users must confirm their password before continuing...
+})->middleware(['auth', 'password.confirm']);
+
+Using controller
+
+Route::get('/dashboard', 'HomeController@index')->name('dashboard')->middleware(['auth', 'password.confirm']);
+
+   ********************************
+
+   After the user has successfully confirmed their password, the user is redirected to the route they originally
+    tried to access. By default, after confirming their password, the user will not have to confirm their
+     password again for three hours. You are free to customize the length of time before the user must 
+     re-confirm their password using the auth.password_timeout configuration option.
+
+     file is in config/uath.php / footer
+
+//HTTP Basic Authentication provides a quick way to authenticate users of your application without
+//setting up a dedicated "login" page.
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware('auth.basic');
+
+
+      ***************************************
+
+USING FORMS IN LARAVEL
+
+In order to use forms in Laravel you would have to download the Laravel form utility
+package developed by Adam Engebretson and Taylor Otwell.
+
+//run composer require laravelcollective/html 
+
+the above command will download and include the html form service providers, the you will
+have to open your app.php file inside your config folder, in the providers array, type
+
+//Collective\Html\HtmlServiceProvider::class,
+
+and in the aliases array type
+
+ 'Form' => Collective\Html\FormFacade::class,
+ 'Html' => Collective\Html\HtmlFacade::class,
+
+   ***************************************
+
+TO use ckeditor for laravel v.7x run
+
+composer require ckeditor/ckeditor
+
+then to your vendor folder, copy the ckeditor file and paste in the public folder
+
+then add the below code to your root app file
+
+  <script src="{{ asset('ckeditor/ckeditor.js')}}"></script>
+    <script>CKEDITOR.replace('article-ckeditor');</script> 
+
+then also add id='article-ckeditor' to your create view file
+
+  ******************************************************
